@@ -1,0 +1,14 @@
+{
+  "query": "What is the warranty period for the product?",
+  "retrieved_context": [
+    {
+      "document": "product_manual.md",
+      "chunk": "The warranty period for the product is one year from the date of purchase."
+    },
+    {
+      "document": "faq.md",
+      "chunk": "Our products come with a one-year warranty covering manufacturing defects."
+    }
+  ],
+  "response": "The warranty period for the product is one year from the date of purchase, covering any manufacturing defects."
+}

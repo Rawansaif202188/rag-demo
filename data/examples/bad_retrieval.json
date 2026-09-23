@@ -1,0 +1,15 @@
+{
+  "query": "What is the warranty period for the product?",
+  "retrieved_context": [
+    {
+      "document": "faq.md",
+      "content": "The warranty period for our products is typically one year from the date of purchase."
+    },
+    {
+      "document": "support_guide.md",
+      "content": "For warranty claims, please contact our support team with your purchase details."
+    }
+  ],
+  "expected_response": "The warranty period for our products is typically one year from the date of purchase.",
+  "actual_response": "I'm sorry, I cannot provide information about the warranty period at this time."
+}
