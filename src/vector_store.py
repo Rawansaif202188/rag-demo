@@ -1,23 +1,27 @@
+import numpy as np
+
+
 class VectorStore:
     def __init__(self):
-        self.embeddings = []
         self.documents = []
+        self.embeddings = []
 
-    def add_embeddings(self, embeddings, documents):
-        self.embeddings.extend(embeddings)
+    def add_embeddings(self, documents, embeddings):
+        if len(documents) != len(embeddings):
+            raise ValueError("documents and embeddings must be the same length.")
+
         self.documents.extend(documents)
+        self.embeddings.extend(embeddings)
 
-    def search(self, query_embedding, top_k=5):
-        # Simple cosine similarity search
-        similarities = [
-            self.cosine_similarity(query_embedding, emb) for emb in self.embeddings
-        ]
-        top_indices = sorted(range(len(similarities)), key=lambda i: similarities[i], reverse=True)[:top_k]
-        return [self.documents[i] for i in top_indices]
+    def search(self, query_embedding, top_k=3):
+        if not self.documents:
+            raise ValueError("Vector store is empty.")
 
-    @staticmethod
-    def cosine_similarity(vec_a, vec_b):
-        dot_product = sum(a * b for a, b in zip(vec_a, vec_b))
-        norm_a = sum(a ** 2 for a in vec_a) ** 0.5
-        norm_b = sum(b ** 2 for b in vec_b) ** 0.5
-        return dot_product / (norm_a * norm_b) if norm_a and norm_b else 0.0
+        doc_embeddings = np.array(self.embeddings, dtype=float)
+        query = np.array(query_embedding, dtype=float)
+
+        norms = np.linalg.norm(doc_embeddings, axis=1) * np.linalg.norm(query)
+        similarities = (doc_embeddings @ query) / norms
+
+        top_indices = np.argsort(similarities)[::-1][:top_k]
+        return [(self.documents[i], float(similarities[i])) for i in top_indices]
