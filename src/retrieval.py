@@ -1,18 +1,16 @@
-def retrieve_context(query, vector_store):
+from embeddings import generate_embeddings
+
+
+def retrieve_context(query, vector_store, top_k=3):
     """
-    Retrieve relevant context based on the given query from the vector store.
-    
-    Args:
-        query (str): The query string to search for.
-        vector_store (VectorStore): An instance of the VectorStore class to perform the search.
-    
-    Returns:
-        list: A list of retrieved contexts relevant to the query.
+    Retrieve the most relevant contexts using mock embeddings.
     """
-    # Generate embeddings for the query
-    query_embedding = generate_embeddings([query])
-    
-    # Search the vector store for relevant contexts
-    retrieved_contexts = vector_store.search(query_embedding)
-    
+
+    query_embedding = generate_embeddings([query])[0]
+
+    retrieved_contexts = vector_store.search(
+        query_embedding,
+        top_k=top_k
+    )
+
     return retrieved_contexts

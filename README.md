@@ -1,73 +1,152 @@
-# RAG Demo Project
+# RAG Pipeline Prototype
 
-This project demonstrates the Retrieval-Augmented Generation (RAG) pipeline, which combines document retrieval and language model generation to provide contextually relevant responses. The pipeline consists of several components, including document chunking, embedding generation, vector storage, context retrieval, and response generation.
+An educational prototype that demonstrates the core architecture and data flow of a Retrieval-Augmented Generation (RAG) pipeline using simplified and mocked components.
+
+This project is designed for learning and experimentation. It does **not** use a real Large Language Model (LLM) or a production-grade embedding model.
+
+## Pipeline
+
+```text
+Documents
+    ↓
+Document Chunking
+    ↓
+Mock Embeddings
+    ↓
+Vector Store
+    ↓
+Similarity Retrieval
+    ↓
+Retrieved Context
+    ↓
+Simulated Response Generation
+```
 
 ## Project Structure
 
-```
-rag-demo
-├── data
-│   ├── documents
-│   │   ├── product_manual.md
-│   │   ├── faq.md
-│   │   └── support_guide.md
-│   └── examples
-│       ├── good_retrieval.json
-│       └── bad_retrieval.json
-├── src
-│   ├── __init__.py
-│   ├── app.py
+```text
+rag-demo/
+├── data/
+│   ├── documents/
+│   └── examples/
+├── src/
 │   ├── chunking.py
 │   ├── embeddings.py
 │   ├── vector_store.py
 │   ├── retrieval.py
-│   ├── llm.py
+│   ├── generation.py
 │   └── demo.py
-├── tests
-│   ├── test_chunking.py
-│   ├── test_retrieval.py
-│   └── test_pipeline.py
-├── .env.example
+├── tests/
 ├── .gitignore
 ├── requirements.txt
-├── README.md
-└── .vscode
-    └── settings.json
+└── README.md
 ```
 
 ## Components
 
-1. **Document Loading**: The documents are stored in the `data/documents` directory and include a product manual, FAQ, and support guide.
+### 1. Document Chunking
 
-2. **Chunking**: The `chunking.py` module contains functions to split documents into smaller, manageable chunks for processing.
+Documents are split into smaller text chunks to prepare them for retrieval.
 
-3. **Embeddings**: The `embeddings.py` module generates embeddings for the text chunks, which are essential for vector search.
+Implemented in:
 
-4. **Vector Store**: The `vector_store.py` module manages the storage and retrieval of embeddings, allowing for efficient searching of relevant chunks.
+```text
+src/chunking.py
+```
 
-5. **Retrieval**: The `retrieval.py` module retrieves context based on a user query, utilizing the vector store to find the most relevant information.
+### 2. Mock Embeddings
 
-6. **Language Model Interaction**: The `llm.py` module interfaces with a language model to generate responses based on the retrieved context.
+The project uses a simplified fixed-dimensional vector representation to demonstrate the concept of embeddings.
 
-7. **Demo**: The `demo.py` module ties together the entire RAG pipeline, showcasing both successful and unsuccessful retrieval scenarios.
+This is **not a semantic embedding model**.
 
-## Usage
+Implemented in:
 
-1. **Setup**: Clone the repository and install the required dependencies listed in `requirements.txt`.
+```text
+src/embeddings.py
+```
 
-2. **Run the Application**: Execute the `app.py` file to initialize the RAG pipeline and see it in action.
+### 3. Vector Store
 
-3. **Testing**: Unit tests are provided in the `tests` directory to ensure the functionality of each component.
+A simple in-memory vector store is implemented using NumPy.
 
-## Examples
+It uses cosine similarity to compare the query vector with stored document vectors.
 
-- **Good Retrieval**: An example of a successful retrieval scenario is provided in `data/examples/good_retrieval.json`.
-- **Bad Retrieval**: An example of a failed retrieval scenario is provided in `data/examples/bad_retrieval.json`.
+Implemented in:
 
-## Contributing
+```text
+src/vector_store.py
+```
 
-Contributions are welcome! Please feel free to submit a pull request or open an issue for any suggestions or improvements.
+### 4. Retrieval
+
+The retrieval component generates a mock embedding for the user's query and retrieves the most similar document chunks.
+
+Implemented in:
+
+```text
+src/retrieval.py
+```
+
+### 5. Simulated Generation
+
+The generation component combines the retrieved context into a simulated response.
+
+No real language model is used.
+
+Implemented in:
+
+```text
+src/generation.py
+```
+
+## Running the Project
+
+Install the required dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+Run the demo:
+
+```bash
+python src/demo.py
+```
+
+Enter a question when prompted.
+
+The system will:
+
+1. Load the documents.
+2. Split them into chunks.
+3. Generate mock embeddings.
+4. Store the embeddings.
+5. Retrieve the most similar chunks.
+6. Display the retrieved context.
+7. Generate a simulated response.
+
+## Educational Scope
+
+This project is intentionally implemented as a simplified RAG pipeline prototype.
+
+The following components are mocked or simplified:
+
+* Embeddings are generated using a basic character-based representation.
+* Vector storage is implemented using NumPy.
+* Response generation is simulated.
+* No real LLM API is used.
+* No production vector database is used.
+* Retrieval quality is intentionally limited compared with semantic embedding models.
+
+The goal is to understand the architecture and data flow of a RAG pipeline before introducing production-grade embedding models, vector databases, and LLM APIs.
+
+## Limitations
+
+Because this project uses simplified mock components, retrieved results may not always be semantically relevant to the user's question.
+
+This behavior is intentional and demonstrates why real RAG systems require semantic embeddings and more advanced retrieval techniques.
 
 ## License
 
-This project is licensed under the MIT License. See the LICENSE file for more details.
+This project is provided for educational and learning purposes.

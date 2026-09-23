@@ -1,69 +1,68 @@
 from pathlib import Path
-import json
 
 from chunking import chunk_documents
 from embeddings import generate_embeddings
 from vector_store import VectorStore
 from retrieval import retrieve_context
-from llm import generate_response
-
-BASE_DIR = Path(__file__).resolve().parent.parent
-DATA_DIR = BASE_DIR / "data"
-DOCS_DIR = DATA_DIR / "documents"
-EXAMPLES_DIR = DATA_DIR / "examples"
+from generation import generate_response
 
 
 def load_documents():
-    if not DOCS_DIR.exists():
-        raise FileNotFoundError(f"Documents folder not found: {DOCS_DIR}")
+    """
+    Load documents from the data/documents directory.
+    """
 
-    files = sorted(DOCS_DIR.glob("*.md"))
-    if not files:
-        raise FileNotFoundError(f"No markdown files found in: {DOCS_DIR}")
+    project_root = Path(__file__).resolve().parent.parent
+    documents_path = project_root / "data" / "documents"
 
     documents = []
-    for file_path in files:
+
+    for file_path in documents_path.glob("*.md"):
         documents.append(file_path.read_text(encoding="utf-8"))
 
     return documents
 
 
-def load_example(file_name):
-    path = EXAMPLES_DIR / file_name
-    if not path.exists():
-        return {"query": "What does this product do?"}
+def main():
+    print("=== RAG Pipeline Prototype ===\n")
 
-    with path.open("r", encoding="utf-8") as file:
-        return json.load(file)
-
-
-def run_rag_pipeline(example):
-    if isinstance(example, str):
-        query = example
-    else:
-        query = example.get("query", "What does this product do?")
-
+    # 1. Load documents
     documents = load_documents()
-    chunks = chunk_documents(documents)
-    embeddings = generate_embeddings(chunks)
+    print(f"Loaded documents: {len(documents)}")
 
+    # 2. Split documents into chunks
+    chunks = chunk_documents(documents)
+    print(f"Created chunks: {len(chunks)}")
+
+    # 3. Generate mock embeddings
+    embeddings = generate_embeddings(chunks)
+    print(f"Generated mock embeddings: {len(embeddings)}")
+
+    # 4. Store documents and embeddings
     vector_store = VectorStore()
     vector_store.add_embeddings(chunks, embeddings)
 
-    retrieved_context = retrieve_context(query, vector_store)
+    # 5. Get user query
+    query = input("\nEnter your question: ")
+
+    # 6. Retrieve relevant context
+    retrieved_context = retrieve_context(
+        query,
+        vector_store,
+        top_k=3
+    )
+
+    print("\n=== Retrieved Context ===")
+
+    for i, (context, score) in enumerate(retrieved_context, start=1):
+        print(f"\nResult {i} | Similarity: {score:.4f}")
+        print(context)
+
+    # 7. Generate simulated response
     response = generate_response(retrieved_context)
-    return response
 
-
-def main():
-    good_example = load_example("good_retrieval.json")
-    bad_example = load_example("bad_retrieval.json")
-
-    print("Good Retrieval Example:")
-    print(run_rag_pipeline(good_example))
-
-    print("\nBad Retrieval Example:")
-    print(run_rag_pipeline(bad_example))
+    print("\n=== Generated Response ===")
+    print(response)
 
 
 if __name__ == "__main__":
